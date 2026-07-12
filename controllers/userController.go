@@ -91,3 +91,26 @@ func Login(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func AddAdmin(c *gin.Context) {
+	var input services.SignUpRequest
+
+	// Check if current user is admin
+
+	// Input validation
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	// Check if user already exists
+	if services.CheckUserExists(input.Email) {
+		c.JSON(http.StatusConflict, gin.H{"error": "User with this email already exists"})
+		return
+	}
+
+	// Register admin
+	// if err := services.RegisterAdmin(input); err.StatusCode != 200 {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register admin, " + err.ErrString})
+	// 	return
+	// }
+}

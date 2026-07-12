@@ -18,3 +18,25 @@ func GetMoviesByDate(searchDate time.Time) ([]models.Movie, error) {
 
 	return movies, nil
 }
+
+func GetMovieByTitle(title string) (*models.Movie, error) {
+	var movie models.Movie
+
+	result := initializers.DB.Where("UPPER(title) = UPPER(?)", title).First(&movie)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &movie, nil
+}
+
+func CreateMovie(movie *models.Movie) error {
+	result := initializers.DB.Create(&movie)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

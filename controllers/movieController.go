@@ -32,3 +32,34 @@ func GetMovieList(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"movies": movies})
 }
+
+func RegisterMovie(c *gin.Context) {
+	var input services.MovieRegisterRequest
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Check if movie already exists
+	if services.CheckMovieExists(input.Title) {
+		c.JSON(http.StatusConflict, gin.H{"error": "Movie with this title already exists"})
+		return
+	}
+
+	// Register the movie
+	if err := services.RegisterMovie(input); err.StatusCode != 200 {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.ErrString})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Movie registered successfully",
+		"movie": gin.H{
+			"title":       input.Title,
+			"description": input.Description,
+			"startDate":   input.StartDate,
+			"endDate":     input.EndDate,
+		},
+	})
+}
