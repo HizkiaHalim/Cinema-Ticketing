@@ -31,7 +31,7 @@ func main() {
 
 	authorized.GET("/movie-list", controllers.GetMovieList)
 	authorized.GET("/add-movie", controllers.RegisterMovie)
-	// authorized.GET("/update-movie", controllers.UpdateMovie)
+	authorized.GET("/update-movie", controllers.UpdateMovie)
 	// authorized.GET("/delete-movie", controllers.RemoveMovie)
 
 	r.Run(":8080")

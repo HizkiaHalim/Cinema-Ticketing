@@ -31,8 +31,30 @@ func GetMovieByTitle(title string) (*models.Movie, error) {
 	return &movie, nil
 }
 
+func GetMovieByTitleId(title string, id uint) (*models.Movie, error) {
+	var movie models.Movie
+
+	result := initializers.DB.Where("UPPER(title) = UPPER(?)", title).Where("id != ?", id).First(&movie)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &movie, nil
+}
+
 func CreateMovie(movie *models.Movie) error {
 	result := initializers.DB.Create(&movie)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func UpdateMovie(movie *models.Movie) error {
+	result := initializers.DB.Save(&movie)
 
 	if result.Error != nil {
 		return result.Error
