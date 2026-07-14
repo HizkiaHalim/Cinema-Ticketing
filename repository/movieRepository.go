@@ -43,6 +43,17 @@ func GetMovieByTitleId(title string, id uint) (*models.Movie, error) {
 	return &movie, nil
 }
 
+func GetMovieById(id uint) (bool, error) {
+	var count int64
+	result := initializers.DB.Model(&models.Movie{}).Where("id = ?", id).Count(&count)
+
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
+}
+
 func CreateMovie(movie *models.Movie) error {
 	result := initializers.DB.Create(&movie)
 
@@ -55,6 +66,16 @@ func CreateMovie(movie *models.Movie) error {
 
 func UpdateMovie(movie *models.Movie) error {
 	result := initializers.DB.Save(&movie)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func DeleteMovie(id uint) error {
+	result := initializers.DB.Delete(&models.Movie{}, id)
 
 	if result.Error != nil {
 		return result.Error

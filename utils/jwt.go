@@ -13,6 +13,7 @@ var jwtKey = []byte(os.Getenv("JWT_SECRET"))
 type Claims struct {
 	UserID uint   `json:"user_id"`
 	Email  string `json:"email"`
+	Admin  bool   `json:"admin"`
 	jwt.RegisteredClaims
 }
 
@@ -27,6 +28,7 @@ func GenerateJWT(id uint, email string) (string, error) {
 	claims := &Claims{
 		UserID: user.ID,
 		Email:  user.Email,
+		Admin:  user.Admin,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

@@ -22,17 +22,40 @@ func main() {
 	r.GET("/ping", controllers.HealthCheck)
 
 	// User routes
-	r.POST("/sign-up", controllers.SignUp)
-	r.POST("/login", controllers.Login)
+	initUserRoutes(r)
 
 	// Protected routes
+	initMovieAdminRoutes(r)
+	initMovieUserRoutes(r)
+
+	r.Run(":8080")
+}
+
+func initUserRoutes(r *gin.Engine) {
+	{
+		r.POST("/sign-up", controllers.SignUp)
+		r.POST("/login", controllers.Login)
+	}
+
+}
+
+func initMovieAdminRoutes(r *gin.Engine) {
+	adminAuthorized := r.Group("/")
+	adminAuthorized.Use(middleware.RequireAdminAuth)
+
+	{
+		adminAuthorized.POST("/add-movie", controllers.RegisterMovie)
+		adminAuthorized.POST("/update-movie", controllers.UpdateMovie)
+		adminAuthorized.POST("/delete-movie", controllers.DeleteMovie)
+	}
+
+}
+
+func initMovieUserRoutes(r *gin.Engine) {
 	authorized := r.Group("/")
 	authorized.Use(middleware.RequireAuth)
 
-	authorized.GET("/movie-list", controllers.GetMovieList)
-	authorized.GET("/add-movie", controllers.RegisterMovie)
-	authorized.GET("/update-movie", controllers.UpdateMovie)
-	// authorized.GET("/delete-movie", controllers.RemoveMovie)
-
-	r.Run(":8080")
+	{
+		authorized.GET("/movie-list", controllers.GetMovieList)
+	}
 }

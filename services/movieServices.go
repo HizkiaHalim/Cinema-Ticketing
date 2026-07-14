@@ -27,6 +27,10 @@ type MovieUpdateRequest struct {
 	EndDate     string `json:"endDate" binding:"required"`
 }
 
+type MovieDeleteRequest struct {
+	Id uint `json:"id" binding:"required"`
+}
+
 func CheckMovieExists(title string) bool {
 
 	movieExists, err := repository.GetMovieByTitle(title)
@@ -46,6 +50,16 @@ func CheckMovieExistsOnUpdate(title string, id uint) bool {
 	}
 
 	return false
+}
+
+func CheckMovieExistOnDelete(id uint) bool {
+	movieExists, err := repository.GetMovieById(id)
+
+	if !movieExists && err == nil {
+		return false
+	}
+
+	return true
 }
 
 func RegisterMovie(input MovieRegisterRequest) ErrorResponse {

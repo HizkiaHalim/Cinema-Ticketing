@@ -71,7 +71,7 @@ func UpdateMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	// Check if movie updated to laready existing one
+	// Check if movie updated to already existing one
 	if services.CheckMovieExistsOnUpdate(input.Title, input.Id) {
 		c.JSON(http.StatusConflict, gin.H{"error": "Movie with this title already exists"})
 		return
@@ -90,6 +90,34 @@ func UpdateMovie(c *gin.Context) {
 			"description": input.Description,
 			"startDate":   input.StartDate,
 			"endDate":     input.EndDate,
+		},
+	})
+}
+
+func DeleteMovie(c *gin.Context) {
+	var input services.MovieDeleteRequest
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
+		return
+	}
+
+	// Check if movie exists using service (following same pattern as UpdateMovie)
+	if services.CheckMovieExistOnDelete(input.Id) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Movie not found"})
+		return
+	}
+
+	// Delete the movie using repository
+	if err := repository.DeleteMovie(input.Id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete movie"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Movie deleted successfully",
+		"movie": gin.H{
+			"id": input.Id,
 		},
 	})
 }
