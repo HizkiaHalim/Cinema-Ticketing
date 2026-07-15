@@ -37,6 +37,17 @@ func CheckUserExists(email string) bool {
 	return false
 }
 
+func CheckAdminExists(email string) bool {
+	var existingUser models.User
+
+	userExists := initializers.DB.Where("email = ?", email).Where("admin = true").First(&existingUser).Error
+
+	if userExists != nil {
+		return true
+	}
+	return false
+}
+
 func RegisterUser(input SignUpRequest) ErrorResponse {
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
@@ -49,6 +60,31 @@ func RegisterUser(input SignUpRequest) ErrorResponse {
 		Name:      input.Name,
 		Email:     input.Email,
 		Password:  string(hashedPassword),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	if err := repository.CreateUser(&user); err != nil {
+		return ErrorResponse{ErrString: "Failed to create user", StatusCode: http.StatusInternalServerError}
+	}
+
+	return ErrorResponse{ErrString: "", StatusCode: http.StatusCreated}
+}
+
+func RegisterAdmin(input SignUpRequest) ErrorResponse {
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+
+	if err != nil {
+		return ErrorResponse{ErrString: "Failed to hash password", StatusCode: http.StatusInternalServerError}
+	}
+
+	// Create new user
+	user := models.User{
+		Name:      input.Name,
+		Email:     input.Email,
+		Password:  string(hashedPassword),
+		Admin:     true,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

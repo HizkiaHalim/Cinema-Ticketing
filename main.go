@@ -44,6 +44,7 @@ func initMovieAdminRoutes(r *gin.Engine) {
 	adminAuthorized.Use(middleware.RequireAdminAuth)
 
 	{
+		adminAuthorized.POST("/register-admin", controllers.RegisterAdmin)
 		adminAuthorized.POST("/add-movie", controllers.RegisterMovie)
 		adminAuthorized.POST("/update-movie", controllers.UpdateMovie)
 		adminAuthorized.POST("/delete-movie", controllers.DeleteMovie)
