@@ -12,6 +12,11 @@ type MovieListRequest struct {
 	SearchDate string `json:"searchDate" binding:"required"`
 }
 
+type MovieDetailRequest struct {
+	Id   uint   `json:"movie_id" binding:"required"`
+	Date string `json:"date" binding:"required"`
+}
+
 type MovieRegisterRequest struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description"`

@@ -16,3 +16,7 @@ type Movie struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+// make a seat map struct
+type SeatMap struct {
+}

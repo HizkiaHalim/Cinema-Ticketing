@@ -54,6 +54,10 @@ func GetMovieById(id uint) (bool, error) {
 	return count > 0, nil
 }
 
+// func GetMovieForDate(id uint, date time.Time) (*models.MovieDetail, error) {
+// 	// make logic that return movie details and screening time and slot remaining in that time
+// }
+
 func CreateMovie(movie *models.Movie) error {
 	result := initializers.DB.Create(&movie)
 

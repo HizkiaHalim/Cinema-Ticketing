@@ -57,6 +57,7 @@ func initMovieUserRoutes(r *gin.Engine) {
 	authorized.Use(middleware.RequireAuth)
 
 	{
-		authorized.GET("/movie-list", controllers.GetMovieList)
+		authorized.POST("/movie-list", controllers.GetMovieList)
+		authorized.POST("/movie-detail", controllers.GetMovieDetailOnDate)
 	}
 }
