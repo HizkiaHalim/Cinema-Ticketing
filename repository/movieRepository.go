@@ -5,6 +5,7 @@ import (
 
 	"github.com/HizkiaHalim/Cinema-Ticketing/initializers"
 	"github.com/HizkiaHalim/Cinema-Ticketing/models"
+	"gorm.io/gorm"
 )
 
 func GetMoviesByDate(searchDate time.Time) ([]models.Movie, error) {
@@ -54,9 +55,16 @@ func GetMovieById(id uint) (bool, error) {
 	return count > 0, nil
 }
 
-// func GetMovieForDate(id uint, date time.Time) (*models.MovieDetail, error) {
-// 	// make logic that return movie details and screening time and slot remaining in that time
-// }
+func GetMovieForDate(id uint, date time.Time) (*models.Movie, error) {
+	var movie models.Movie
+
+	// Use Preload to load showtimes
+	err := initializers.DB.Preload("Showtimes", func(db *gorm.DB) *gorm.DB {
+		return db.Where("DATE(show_date) = ?", date)
+	}).First(&movie, id).Error
+
+	return &movie, err
+}
 
 func CreateMovie(movie *models.Movie) error {
 	result := initializers.DB.Create(&movie)

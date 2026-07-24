@@ -41,20 +41,13 @@ func GetMovieDetailOnDate(c *gin.Context) {
 		return
 	}
 
-	// Parse the search date
-	searchDate, err := time.Parse("2006-01-02", input.Date)
+	movieDetail, err := services.GetMovieForDate(input.Id, input.Date)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch movies"})
 		return
 	}
 
-	// movies, err := repository.GetMovieForDate(input.Id, searchDate)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch movies"})
-	// 	return
-	// }
-
-	c.JSON(http.StatusOK, gin.H{"movies": searchDate})
+	c.JSON(http.StatusOK, gin.H{"movieDetail": movieDetail})
 }
 
 func RegisterMovie(c *gin.Context) {

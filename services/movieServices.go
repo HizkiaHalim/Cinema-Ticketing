@@ -1,9 +1,11 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/HizkiaHalim/Cinema-Ticketing/dto"
 	"github.com/HizkiaHalim/Cinema-Ticketing/models"
 	"github.com/HizkiaHalim/Cinema-Ticketing/repository"
 )
@@ -120,4 +122,38 @@ func UpdateMovie(input MovieUpdateRequest) ErrorResponse {
 	}
 
 	return ErrorResponse{ErrString: "", StatusCode: http.StatusCreated}
+}
+
+func GetMovieForDate(id uint, date string) (*dto.MovieDetailResponse, error) {
+	// Parse the search date
+	parsedDate, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return nil, fmt.Errorf("invalid date format")
+	}
+
+	// Get movie with preloaded showtimes for specific date
+	movie, err := repository.GetMovieForDate(id, parsedDate)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Prepare response with booking status
+	response := &dto.MovieDetailResponse{
+		ID:          movie.ID,
+		Title:       movie.Title,
+		Description: movie.Description,
+		Showtimes:   make([]dto.ShowtimeResponse, len(movie.Showtimes)),
+	}
+
+	// Process showtimes with booking status
+	for i, showtime := range movie.Showtimes {
+		response.Showtimes[i] = dto.ShowtimeResponse{
+			ID:     showtime.ID,
+			Time:   showtime.ShowTime,
+			IsFull: showtime.BookedSeats >= showtime.TotalSeats,
+		}
+	}
+
+	return response, nil
 }
