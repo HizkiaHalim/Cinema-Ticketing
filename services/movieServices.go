@@ -148,10 +148,12 @@ func GetMovieForDate(id uint, date string) (*dto.MovieDetailResponse, error) {
 
 	// Process showtimes with booking status
 	for i, showtime := range movie.Showtimes {
+		full := showtime.Studio.Capacity == 0
+
 		response.Showtimes[i] = dto.ShowtimeResponse{
-			ID:     showtime.ID,
-			Time:   showtime.ShowTime,
-			IsFull: showtime.BookedSeats >= showtime.TotalSeats,
+			ID:        showtime.Studio.ID,
+			StudioNum: showtime.Studio.Studio_num,
+			IsFull:    full,
 		}
 	}
 

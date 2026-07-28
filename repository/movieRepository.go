@@ -60,7 +60,7 @@ func GetMovieForDate(id uint, date time.Time) (*models.Movie, error) {
 
 	// Use Preload to load showtimes
 	err := initializers.DB.Preload("Showtimes", func(db *gorm.DB) *gorm.DB {
-		return db.Where("DATE(show_date) = ?", date)
+		return db.Where("DATE(show_date) = ?", date).Preload("Studio")
 	}).First(&movie, id).Error
 
 	return &movie, err

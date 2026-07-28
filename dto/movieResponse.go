@@ -9,8 +9,15 @@ type MovieDetailResponse struct {
 }
 
 type ShowtimeResponse struct {
-	ID       uint   `json:"id"`
-	Time     string `json:"time"`
-	SeatLeft int    `json:"seat_left"`
-	IsFull   bool   `json:"is_full"`
+	ID        uint   `json:"id"`
+	Time      string `json:"time"`
+	SeatLeft  int    `json:"seat_left"`
+	IsFull    bool   `json:"is_full"`
+	StudioNum string `json:"studio_num"`
+}
+
+type StudioResponse struct {
+	ID        uint   `json:"id"`
+	StudioNum string `json:"studio_num"`
+	Capacity  int    `json:"capacity"`
 }

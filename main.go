@@ -25,7 +25,7 @@ func main() {
 	initUserRoutes(r)
 
 	// Protected routes
-	initMovieAdminRoutes(r)
+	initCinemaAdminRoutes(r)
 	initMovieUserRoutes(r)
 
 	r.Run(":8080")
@@ -39,7 +39,7 @@ func initUserRoutes(r *gin.Engine) {
 
 }
 
-func initMovieAdminRoutes(r *gin.Engine) {
+func initCinemaAdminRoutes(r *gin.Engine) {
 	adminAuthorized := r.Group("/")
 	adminAuthorized.Use(middleware.RequireAdminAuth)
 
@@ -48,6 +48,8 @@ func initMovieAdminRoutes(r *gin.Engine) {
 		adminAuthorized.POST("/add-movie", controllers.RegisterMovie)
 		adminAuthorized.POST("/update-movie", controllers.UpdateMovie)
 		adminAuthorized.POST("/delete-movie", controllers.DeleteMovie)
+
+		adminAuthorized.POST("/add-showtime", controllers.AddShowtime)
 	}
 
 }
